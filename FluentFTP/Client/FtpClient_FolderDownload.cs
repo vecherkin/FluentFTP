@@ -79,7 +79,7 @@ namespace FluentFTP {
 			DownloadServerFiles(toDownload, existsMode, verifyOptions, progress);
 
 			// delete the extra local files if in mirror mode
-			DeleteExtraLocalFiles(localFolder, mode, shouldExist, rules);
+			DeleteExtraLocalFiles(localFolder, mode, shouldExist, rules, results);
 
 			return results;
 		}
@@ -190,6 +190,7 @@ namespace FluentFTP {
 					RemotePath = remoteFile.FullName,
 					LocalPath = localFile,
 					IsDownload = true,
+					IsDeleted = false
 				};
 
 				// only files and folders are processed
@@ -341,7 +342,7 @@ namespace FluentFTP {
 		/// <summary>
 		/// Delete the extra local files if in mirror mode
 		/// </summary>
-		private void DeleteExtraLocalFiles(string localFolder, FtpFolderSyncMode mode, Dictionary<string, bool> shouldExist, List<FtpRule> rules) {
+		private void DeleteExtraLocalFiles(string localFolder, FtpFolderSyncMode mode, Dictionary<string, bool> shouldExist, List<FtpRule> rules, List<FtpResult> results) {
 			if (mode == FtpFolderSyncMode.Mirror) {
 
 				LogFunc(nameof(DeleteExtraLocalFiles));
@@ -361,6 +362,15 @@ namespace FluentFTP {
 							// delete the file from disk
 							try {
 								File.Delete(existingLocalFile);
+								results.Add(new FtpResult
+								{
+									IsDeleted = true,
+									IsDownload = false,
+									IsFailed = false,
+									IsSkipped = false,
+									IsSuccess = true,
+									LocalPath = existingLocalFile
+								});
 							}
 							catch (Exception ex) { }
 						}

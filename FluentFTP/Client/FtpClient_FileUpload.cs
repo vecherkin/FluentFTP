@@ -20,6 +20,9 @@ using System.Threading.Tasks;
 #endif
 
 namespace FluentFTP {
+	using System.Threading;
+	using Exceptions;
+
 	public partial class FtpClient : IDisposable {
 		#region Upload Multiple Files
 

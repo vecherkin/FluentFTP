@@ -7,8 +7,14 @@ namespace FluentFTP {
 	/// <summary>
 	/// Stores the result of a file transfer when UploadDirectory or DownloadDirectory is used.
 	/// </summary>
-	public class FtpResult {
+	public class FtpResult
+	{
 
+		/// <summary>
+		/// Returns true if the file was deleted.
+		/// </summary>
+		public bool IsDeleted;
+		
 		/// <summary>
 		/// Returns true if the file was downloaded, false if it was uploaded.
 		/// </summary>
@@ -93,18 +99,32 @@ namespace FluentFTP {
 				else {
 					sb.Append("Uploaded:    ");
 				}
+
+				if (this.IsDeleted)
+				{
+					sb.Append("Deleted:  ");
+				}
 			}
 
-			// add path
-			if (IsDownload) {
-				sb.Append(RemotePath);
+			if (this.IsDeleted)
+			{
+				sb.Append("[DELETE]");
 				sb.Append("  -->  ");
 				sb.Append(LocalPath);
 			}
-			else {
-				sb.Append(LocalPath);
-				sb.Append("  -->  ");
-				sb.Append(RemotePath);
+			else
+			{
+				// add path
+				if (IsDownload) {
+					sb.Append(RemotePath);
+					sb.Append("  -->  ");
+					sb.Append(LocalPath);
+				}
+				else {
+					sb.Append(LocalPath);
+					sb.Append("  -->  ");
+					sb.Append(RemotePath);
+				}
 			}
 
 			// add error
